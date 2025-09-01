@@ -25,7 +25,7 @@
     .panel { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
              border: 1px solid rgba(255,255,255,.06); box-shadow: 0 10px 40px rgba(0,0,0,.35);
              border-radius: 16px; padding: 18px; margin-top: 18px; }
-    .row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .button-container { display: flex; flex-direction: column; gap: 12px; }
     .btn {
       appearance: none; border: 0; border-radius: 14px; padding: 14px 16px; cursor: pointer; font-weight: 700;
       background: linear-gradient(180deg, var(--accent), #4a7ff0); color: #071128; box-shadow: 0 10px 24px rgba(110,168,254,.35);
@@ -82,8 +82,7 @@
       .title { font-size: 20px; }
       .sub { font-size: 13px; }
       .panel { padding: 16px; margin-top: 16px; border-radius: 12px; }
-      .row { 
-        grid-template-columns: 1fr; 
+      .button-container { 
         gap: 10px; 
       }
       .btn { 
@@ -162,10 +161,10 @@
     <div class="sub">버튼 클릭만으로 4Hz 바이노럴 비트를 생성하고 MP3로 내려받을 수 있습니다. (기본 5분 트랙)</div>
 
     <div class="panel">
-      <div class="row">
-        <button class="btn" id="btn-sleep">🛌 수면용 4Hz MP3 만들기</button>
-        <button class="btn alt" id="btn-focus">🎯 집중용 4Hz MP3 만들기</button>
-        <button class="btn dim" id="btn-medit">🧘 명상용 4Hz MP3 만들기</button>
+      <div class="button-container">
+        <button class="btn" id="btn-sleep" onclick="window.location.href='sleep.html'">🛌 수면용 4Hz MP3 만들기</button>
+        <button class="btn alt" id="btn-focus" onclick="window.location.href='focus.html'">🎯 집중용 4Hz MP3 만들기</button>
+        <button class="btn dim" id="btn-medit" onclick="window.location.href='meditation.html'">🧘 명상용 4Hz MP3 만들기</button>
       </div>
       <div class="chips">
         <span class="chip">샘플레이트: 44.1 kHz</span>
@@ -177,27 +176,14 @@
       <div class="tip">🔊 권장: 볼륨을 낮게 시작하세요. 장시간·고음량 사용은 피하세요.</div>
     </div>
 
-          <div class="panel">
-        <strong style="text-align: center; display: block;">생성 상태</strong>
-        <div id="log" class="log">준비됨.
-- 원하는 버튼을 클릭하세요.
-- 렌더링 및 인코딩 중에는 이 창을 닫지 마세요.
-</div>
-        <div id="progress-container" class="progress-container">
-          <div class="progress-bar">
-            <div id="progress-fill" class="progress-fill"></div>
-          </div>
-          <div id="progress-text" class="progress-text">0%</div>
-        </div>
-        <div class="audio">
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <audio id="player" controls></audio>
-            <button id="download" class="btn download-btn" style="display:none; max-width: 180px; padding: 8px 14px; font-size: 13px;">
-              ⬇️ 다운로드
-            </button>
-          </div>
-        </div>
-      </div>
+    <div class="panel tip">
+      <h3 style="margin: 0 0 15px 0; color: var(--accent);">사용 방법</h3>
+      <p style="margin: 0; line-height: 1.6;">
+        1. 위의 세 가지 버튼 중 원하는 용도를 선택하세요<br>
+        2. 각 용도별로 최적화된 4Hz 바이노럴 비트가 생성됩니다<br>
+        3. 생성된 MP3를 다운로드하여 사용하세요
+      </p>
+    </div>
 
     <div class="panel tip">
       
@@ -442,50 +428,21 @@
     medit:   { durationSec: DURATION_SEC, carrierHz: 174, withNoise: true,  noiseLowpassHz: 1000, label:'명상',   file:'4hz_theta_meditation' },
   };
 
-  // 버튼 이벤트 리스너 등록
-  const btnSleep = document.getElementById('btn-sleep');
-  const btnFocus = document.getElementById('btn-focus');
-  const btnMedit = document.getElementById('btn-medit');
-
-  if (btnSleep) {
-    btnSleep.addEventListener('click', () => {
-      console.log('수면 버튼 클릭됨');
-      generateAndDownload({preset: PRESETS.sleep});
-    });
-  } else {
-    console.error('수면 버튼을 찾을 수 없습니다');
-  }
-
-  if (btnFocus) {
-    btnFocus.addEventListener('click', () => {
-      console.log('집중 버튼 클릭됨');
-      generateAndDownload({preset: PRESETS.focus});
-    });
-  } else {
-    console.error('집중 버튼을 찾을 수 없습니다');
-  }
-
-  if (btnMedit) {
-    btnMedit.addEventListener('click', () => {
-      console.log('명상 버튼 클릭됨');
-      generateAndDownload({preset: PRESETS.medit});
-    });
-  } else {
-    console.error('명상 버튼을 찾을 수 없습니다');
-  }
-
-  // 페이지 로드 완료 확인
-  console.log('페이지 로드 완료');
-  console.log('버튼들:', { btnSleep, btnFocus, btnMedit });
+  // 메인 페이지 - 선택 화면
+  console.log('4Hz 바이노럴 비트 생성기 메인 페이지 로드 완료');
   
-  // 초기화 상태 확인
-  console.log('Web Audio API 지원:', !!(window.AudioContext || window.webkitAudioContext || window.OfflineAudioContext || window.webkitOfflineAudioContext));
-  console.log('LameJS 로드 상태:', !!(window.lamejs && window.lamejs.Mp3Encoder));
+  // 버튼 클릭 시 해당 페이지로 이동
+  document.getElementById('btn-sleep').addEventListener('click', () => {
+    console.log('수면용 페이지로 이동');
+  });
   
-  // 초기 로그 메시지
-  log('4Hz 바이노럴 비트 생성기 준비 완료');
-  log('- 브라우저 호환성: ' + (!!(window.AudioContext || window.webkitAudioContext || window.OfflineAudioContext || window.webkitOfflineAudioContext) ? '✅ 지원' : '❌ 미지원'));
-  log('- MP3 인코더: ' + (!!(window.lamejs && window.lamejs.Mp3Encoder) ? '✅ 로드됨' : '❌ 로드 실패'));
+  document.getElementById('btn-focus').addEventListener('click', () => {
+    console.log('집중용 페이지로 이동');
+  });
+  
+  document.getElementById('btn-medit').addEventListener('click', () => {
+    console.log('명상용 페이지로 이동');
+  });
 })();
 </script>
 </body>
