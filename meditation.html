@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>명상용 4Hz 세타파 바이노럴 비트 MP3 생성기</title>
+  <style>
+    :root {
+      --bg: #0b1020; --card: #111833; --text: #e7ecff; --sub: #9fb0ff;
+      --accent: #6ea8fe; --accent-2: #4dd0b5; --muted: #2a3358;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 32px; background: radial-gradient(1200px 600px at 20% 0%, #0f1a3d, var(--bg));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, \B3CB\C6C0, Noto Sans KR, sans-serif;
+      color: var(--text);
+    }
+    .wrap { max-width: 940px; margin: 0 auto; text-align: center; padding: 0 16px; }
+    .title { font-size: 23px; font-weight: 800; letter-spacing: .2px; text-align: center; }
+    .sub { color: var(--sub); margin-top: 6px; font-size: 14px; text-align: center; }
+    .panel { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+             border: 1px solid rgba(255,255,255,.06); box-shadow: 0 10px 40px rgba(0,0,0,.35);
+             border-radius: 16px; padding: 18px; margin-top: 18px; }
+    .btn {
+      appearance: none; border: 0; border-radius: 14px; padding: 14px 16px; cursor: pointer; font-weight: 700;
+      background: linear-gradient(180deg, var(--accent), #4a7ff0); color: #071128; box-shadow: 0 10px 24px rgba(110,168,254,.35);
+      transition: transform .06s ease, filter .2s ease; width: 100%;
+    }
+    .btn.alt   { background: linear-gradient(180deg, var(--accent-2), #24b39a); box-shadow: 0 10px 24px rgba(77,208,181,.35); }
+    .btn.dim   { background: linear-gradient(180deg, #a287ff, #8569ff); box-shadow: 0 10px 24px rgba(162,135,255,.35); }
+    .btn:hover { filter: brightness(1.08) saturate(1.05); }
+    .btn:active{ transform: translateY(1px) scale(.997); }
+    
+    /* 모바일 터치 최적화 */
+    @media (hover: none) and (pointer: coarse) {
+      .btn:hover { filter: none; }
+      .btn:active { transform: translateY(1px) scale(.997); }
+    }
+
+    .log { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+           font-size: 12px; color: #cfe3ff; white-space: pre-wrap; background: #0c1228; border-radius: 12px;
+           border: 1px solid rgba(255,255,255,.06); padding: 12px; height: 120px; overflow: auto; }
+    .audio { margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .tip { color: #b7c6ff; font-size: 12px; opacity: .9; text-align: center; }
+    .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; justify-content: center; }
+    .chip  { border:1px solid rgba(255,255,255,.14); color:#d8e3ff; background: rgba(255,255,255,.04); border-radius: 999px; padding:6px 10px; font-size:12px; }
+    .progress-container { 
+      margin: 15px 0; 
+      display: none; 
+      text-align: center; 
+    }
+    .progress-bar { 
+      width: 100%; 
+      height: 8px; 
+      background: rgba(255,255,255,.1); 
+      border-radius: 4px; 
+      overflow: hidden; 
+      margin-bottom: 8px; 
+    }
+    .progress-fill { 
+      height: 100%; 
+      background: linear-gradient(90deg, var(--accent), var(--accent-2)); 
+      width: 0%; 
+      transition: width 0.3s ease; 
+      border-radius: 4px; 
+    }
+    .progress-text { 
+      font-size: 12px; 
+      color: var(--sub); 
+      font-weight: 500; 
+    }
+    .back-btn {
+      background: linear-gradient(180deg, #666, #444);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover {
+      background: linear-gradient(180deg, #777, #555);
+      transform: translateY(-1px);
+    }
+
+    /* 모바일 반응형 스타일 */
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .wrap { padding: 0 8px; }
+      .title { font-size: 20px; }
+      .sub { font-size: 13px; }
+      .panel { padding: 16px; margin-top: 16px; border-radius: 12px; }
+      .btn { 
+        padding: 16px 14px; 
+        font-size: 15px; 
+        border-radius: 12px; 
+      }
+      .chips { 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 6px; 
+      }
+      .chip { 
+        font-size: 11px; 
+        padding: 5px 8px; 
+      }
+      .log { 
+        height: 100px; 
+        font-size: 11px; 
+        padding: 10px; 
+      }
+      .audio { 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 12px; 
+      }
+      audio { 
+        width: 100%; 
+        max-width: 300px; 
+      }
+      .progress-container { 
+        margin: 12px 0; 
+      }
+      .progress-bar { 
+        height: 6px; 
+      }
+      .progress-text { 
+        font-size: 11px; 
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .wrap { padding: 0 4px; }
+      .title { font-size: 18px; }
+      .sub { font-size: 12px; }
+      .panel { padding: 14px; margin-top: 14px; }
+      .btn { 
+        padding: 18px 16px; 
+        font-size: 16px; 
+      }
+      .chips { gap: 4px; }
+      .chip { 
+        font-size: 10px; 
+        padding: 4px 6px; 
+      }
+    }
+  </style>
+  <!-- LameJS for MP3 encoding (CDN) -->
+  <script src="https://unpkg.com/lamejs@1.2.0/lame.min.js"></script>
+  <!-- Fallback CDN for LameJS -->
+  <script>
+    // LameJS 로딩 실패 시 대체 CDN 시도
+    if (typeof window.lamejs === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js';
+      script.onload = () => console.log('LameJS loaded from fallback CDN');
+      script.onerror = () => console.error('LameJS failed to load from all CDNs');
+      document.head.appendChild(script);
+    }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <button class="back-btn" onclick="window.location.href='index.html'">← 메인으로 돌아가기</button>
+    
+    <div class="title">🧘 명상용 4Hz Theta Wave Binaural Beats MP3 Generator</div>
+    <div class="sub">명상에 최적화된 4Hz 바이노럴 비트를 생성하고 MP3로 내려받을 수 있습니다. (기본 5분 트랙)</div>
+
+    <div class="panel">
+      <div style="text-align: center;">
+        <button class="btn dim" id="btn-medit" style="max-width: 300px;">🧘 명상용 4Hz MP3 만들기</button>
+      </div>
+      <div class="chips">
+        <span class="chip">샘플레이트: 44.1 kHz</span>
+        <span class="chip">비트레이트: 128 kbps MP3</span>
+        <span class="chip">길이: 5분</span>
+        <span class="chip">차주파수: 4 Hz</span>
+        <span class="chip">캐리어 주파수: 174 Hz</span>
+        <span class="chip">백색 소음: 포함</span>
+      </div>
+      <div style="height:12px"></div>
+      <div class="tip">🧘 명상용: 중간 주파수(174Hz)와 부드러운 백색 소음으로 깊은 명상 상태를 만들어줍니다.</div>
+    </div>
+
+    <div class="panel">
+      <strong style="text-align: center; display: block;">생성 상태</strong>
+      <div id="log" class="log">준비됨.
+- 명상용 4Hz MP3 버튼을 클릭하세요.
+- 렌더링 및 인코딩 중에는 이 창을 닫지 마세요.
+</div>
+      <div id="progress-container" class="progress-container">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="progress-text" class="progress-text">0%</div>
+      </div>
+      <div class="audio">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+          <audio id="player" controls></audio>
+          <button id="download" class="btn download-btn" style="display:none; max-width: 180px; padding: 8px 14px; font-size: 13px;">
+            ⬇️ 다운로드
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel tip">
+      <h3 style="margin: 0 0 15px 0; color: var(--accent-2);">명상용 바이노럴 비트 특징</h3>
+      <p style="margin: 0; line-height: 1.6;">
+        • 4Hz 세타파와 유사한 주파수를 사용하여 편안한 명상 상태에 도움을 줄 수 있습니다<br>
+        • 174Hz 캐리어 주파수로 균형 잡힌 중간 주파수를 제공합니다<br>
+        • 백색 소음이 포함되어 외부 소음을 완화해 집중을 돕습니다<br>
+        • 5분 길이로 명상, 요가, 휴식 등에 적합합니다
+    </div>
+  </div>
+
+<script>
+(function(){
+  const SAMPLE_RATE = 44100; // 44.1kHz
+  const DURATION_SEC_DEFAULT = 300; // 5분
+  const MP3_KBPS = 128;
+  const BEAT_HZ = 4; // 세타파 4Hz 차주파수
+
+  const logEl = document.getElementById('log');
+  const player = document.getElementById('player');
+  const dl = document.getElementById('download');
+  const progressContainer = document.getElementById('progress-container');
+  const progressFill = document.getElementById('progress-fill');
+  const progressText = document.getElementById('progress-text');
+
+  function log(msg){ logEl.textContent += `\n${msg}`; logEl.scrollTop = logEl.scrollHeight; }
+  function clearLog(){ logEl.textContent = ''; }
+  
+  function updateProgress(percent) {
+    progressFill.style.width = percent + '%';
+    progressText.textContent = Math.round(percent) + '%';
+  }
+  
+  function showProgress() {
+    progressContainer.style.display = 'block';
+    updateProgress(0);
+  }
+  
+  function hideProgress() {
+    progressContainer.style.display = 'none';
+  }
+
+  /**
+   * 오디오 버퍼를 오프라인에서 합성하여 반환
+   */
+  async function renderBinauralBuffer({durationSec, carrierHz, withNoise, noiseLowpassHz=1000, label}){
+    try {
+      const length = Math.floor(durationSec * SAMPLE_RATE);
+      
+      // OfflineAudioContext 생성 시도 (브라우저 호환성)
+      let ctx;
+      try {
+        ctx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(2, length, SAMPLE_RATE);
+      } catch (audioError) {
+        throw new Error(`오디오 컨텍스트 생성 실패: ${audioError.message}`);
+      }
+
+      // 채널 병합기
+      const merger = ctx.createChannelMerger(2);
+
+      // 좌/우 오실레이터 (4Hz 차이)
+      const leftOsc  = ctx.createOscillator();
+      const rightOsc = ctx.createOscillator();
+      leftOsc.type = 'sine'; rightOsc.type = 'sine';
+      leftOsc.frequency.value = Math.max(20, carrierHz - BEAT_HZ/2);
+      rightOsc.frequency.value = Math.max(20, carrierHz + BEAT_HZ/2);
+
+      // 개별 게인 + 페이드 인/아웃 (클릭 방지)
+      const leftGain = ctx.createGain();
+      const rightGain = ctx.createGain();
+      [leftGain.gain, rightGain.gain].forEach(g => {
+        g.setValueAtTime(0.0001, 0);
+        g.exponentialRampToValueAtTime(0.25, 4); // 4초 페이드인
+        g.setValueAtTime(0.25, durationSec - 4);
+        g.exponentialRampToValueAtTime(0.0001, durationSec); // 4초 페이드아웃
+      });
+
+      // 연결: 각 채널로 라우팅
+      leftOsc.connect(leftGain).connect(merger, 0, 0); // L -> ch0
+      rightOsc.connect(rightGain).connect(merger, 0, 1); // R -> ch1
+
+      // 선택적 백색 소음 (모노)
+      if(withNoise){
+        const noiseBuf = ctx.createBuffer(1, length, SAMPLE_RATE);
+        const d = noiseBuf.getChannelData(0);
+        for(let i=0; i<d.length; i++) d[i] = (Math.random()*2-1) * 0.35; // white noise (amplitude)
+
+        const noise = ctx.createBufferSource(); noise.buffer = noiseBuf; noise.loop = false;
+        const noiseGainL = ctx.createGain();
+        const noiseGainR = ctx.createGain();
+        noiseGainL.gain.value = 0.04; // 낮은 레벨로 섞기
+        noiseGainR.gain.value = 0.04;
+
+        let filtered = noise;
+        if(noiseLowpassHz){
+          const lp = ctx.createBiquadFilter();
+          lp.type = 'lowpass';
+          lp.frequency.value = noiseLowpassHz;
+          noise.connect(lp);
+          filtered = lp;
+        }
+        // 동일 소음을 양 채널로 얇게 깔기
+        filtered.connect(noiseGainL).connect(merger, 0, 0);
+        filtered.connect(noiseGainR).connect(merger, 0, 1);
+
+        // 소음도 페이드 처리
+        [noiseGainL.gain, noiseGainR.gain].forEach(g => {
+          g.setValueAtTime(0.0001, 0);
+          g.exponentialRampToValueAtTime(0.04, 4);
+          g.setValueAtTime(0.04, durationSec - 4);
+          g.exponentialRampToValueAtTime(0.0001, durationSec);
+        });
+
+        noise.start(0);
+      }
+
+      merger.connect(ctx.destination);
+      leftOsc.start(0); rightOsc.start(0);
+      leftOsc.stop(durationSec); rightOsc.stop(durationSec);
+
+      log(`[합성] ${label}: ${carrierHz.toFixed(1)}Hz ±2Hz, 길이 ${durationSec}s`);
+      const rendered = await ctx.startRendering();
+      return rendered;
+    } catch (error) {
+      throw new Error(`오디오 렌더링 실패: ${error.message}`);
+    }
+  }
+
+  // Float32Array(-1~1) -> Int16Array 변환
+  function floatTo16BitPCM(float32){
+    const s = new Int16Array(float32.length);
+    for(let i=0; i<float32.length; i++){
+      let v = Math.max(-1, Math.min(1, float32[i]));
+      s[i] = v < 0 ? v * 0x8000 : v * 0x7FFF;
+    }
+    return s;
+  }
+
+  // OfflineAudioBuffer -> MP3(Blob)
+  function encodeMp3FromBuffer(buffer){
+    if(!(window.lamejs && lamejs.Mp3Encoder)){
+      throw new Error('lamejs 로더 실패: CDN 접근이 가능한지 확인해주세요.');
+    }
+    const numChannels = 2;
+    const sampleRate = buffer.sampleRate;
+    const left = floatTo16BitPCM(buffer.getChannelData(0));
+    const right = floatTo16BitPCM(buffer.getChannelData(1));
+
+    const enc = new lamejs.Mp3Encoder(numChannels, sampleRate, MP3_KBPS);
+    const blockSize = 1152; // MP3 프레임 크기
+    const mp3Data = [];
+
+    for(let i=0; i<left.length; i += blockSize){
+      const leftChunk  = left.subarray(i, i+blockSize);
+      const rightChunk = right.subarray(i, i+blockSize);
+      const mp3buf = enc.encodeBuffer(leftChunk, rightChunk);
+      if(mp3buf.length) mp3Data.push(new Int8Array(mp3buf));
+    }
+    const end = enc.flush();
+    if(end.length) mp3Data.push(new Int8Array(end));
+    return new Blob(mp3Data, { type: 'audio/mpeg' });
+  }
+
+  async function generateAndDownload({preset}){
+    try{
+      clearLog();
+      showProgress();
+      log(`[시작] ${preset.label} 트랙 생성`);
+
+      // 브라우저 호환성 체크
+      if (!window.AudioContext && !window.webkitAudioContext && !window.OfflineAudioContext && !window.webkitOfflineAudioContext) {
+        throw new Error('이 브라우저는 Web Audio API를 지원하지 않습니다.');
+      }
+
+      // LameJS 로딩 체크
+      if (!window.lamejs || !window.lamejs.Mp3Encoder) {
+        throw new Error('LameJS 라이브러리가 로드되지 않았습니다. 페이지를 새로고침해주세요.');
+      }
+
+      // 렌더링 단계 (50%)
+      updateProgress(10);
+      log('[진행] 오디오 렌더링 시작...');
+      const buf = await renderBinauralBuffer(preset);
+      updateProgress(50);
+      log('[렌더링 완료] MP3 인코딩 시작…');
+
+      // 인코딩 단계 (90%)
+      updateProgress(70);
+      log('[진행] MP3 인코딩 중...');
+      const blob = encodeMp3FromBuffer(buf);
+      updateProgress(90);
+      
+      const url = URL.createObjectURL(blob);
+      const fileName = `${preset.file || 'binaural_4hz'}.mp3`;
+
+      // 완료 (100%)
+      updateProgress(100);
+      
+      // 오디오 미리듣기
+      player.src = url;
+      player.load();
+
+      // 다운로드 버튼
+      dl.onclick = () => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+      };
+      dl.style.display = 'inline-block';
+      dl.textContent = `⬇️ ${fileName}`;
+
+      log(`[완료] 파일 준비됨: ${fileName}`);
+      
+      // 1초 후 진행률 숨기기
+      setTimeout(() => hideProgress(), 1000);
+    }catch(err){
+      console.error('GenerateAndDownload Error:', err);
+      log(`[에러] ${err.message || err}`);
+      
+      // 사용자 친화적인 오류 메시지
+      let userMessage = '알 수 없는 오류가 발생했습니다.';
+      if (err.message.includes('Web Audio API')) {
+        userMessage = '이 브라우저는 오디오 생성을 지원하지 않습니다. Chrome, Firefox, Safari를 사용해주세요.';
+      } else if (err.message.includes('LameJS')) {
+        userMessage = 'MP3 인코더 로딩에 실패했습니다. 페이지를 새로고침해주세요.';
+      } else if (err.message.includes('OfflineAudioContext')) {
+        userMessage = '오디오 컨텍스트 생성에 실패했습니다. HTTPS 환경에서 접속해주세요.';
+      }
+      
+      alert(userMessage);
+      hideProgress();
+    }
+  }
+
+  // 명상용 프리셋 정의
+  const DURATION_SEC = DURATION_SEC_DEFAULT;
+  const PRESET_MEDIT = { 
+    durationSec: DURATION_SEC, 
+    carrierHz: 174, 
+    withNoise: true,  
+    noiseLowpassHz: 1000,  
+    label:'명상',   
+    file:'4hz_theta_meditation' 
+  };
+
+  // 명상용 버튼 이벤트 리스너
+  document.getElementById('btn-medit').addEventListener('click', () => {
+    console.log('명상용 4Hz MP3 생성 시작');
+    generateAndDownload({preset: PRESET_MEDIT});
+  });
+
+  // 페이지 로드 완료 확인
+  console.log('명상용 4Hz 바이노럴 비트 생성기 로드 완료');
+  console.log('Web Audio API 지원:', !!(window.AudioContext || window.webkitAudioContext || window.OfflineAudioContext || window.webkitOfflineAudioContext));
+  console.log('LameJS 로드 상태:', !!(window.lamejs && window.lamejs.Mp3Encoder));
+  
+  // 초기 로그 메시지
+  log('명상용 4Hz 바이노럴 비트 생성기 준비 완료');
+  log('- 브라우저 호환성: ' + (!!(window.AudioContext || window.webkitAudioContext || window.OfflineAudioContext || window.webkitOfflineAudioContext) ? '✅ 지원' : '❌ 미지원'));
+  log('- MP3 인코더: ' + (!!(window.lamejs && window.lamejs.Mp3Encoder) ? '✅ 로드됨' : '❌ 로드 실패'));
+})();
+</script>
+</body>
+</html>
