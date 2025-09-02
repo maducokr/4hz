@@ -13,12 +13,13 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'", "https://unpkg.com"],
+      scriptSrc: ["'self'", "https://unpkg.com", "https://cdn.jsdelivr.net"],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"],
+      imgSrc: ["'self'", "data:", "https:"],
     },
   },
 }));
@@ -28,12 +29,25 @@ app.use(cors()); // CORS 허용
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 정적 파일 서빙
-app.use(express.static(path.join(__dirname, 'public')));
+// 정적 파일 서빙 (루트 디렉토리)
+app.use(express.static(__dirname));
 
 // 메인 페이지 라우트
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// 각 페이지별 라우트 추가 (SPA 라우팅 지원)
+app.get('/sleep', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sleep.html'));
+});
+
+app.get('/focus', (req, res) => {
+  res.sendFile(path.join(__dirname, 'focus.html'));
+});
+
+app.get('/meditation', (req, res) => {
+  res.sendFile(path.join(__dirname, 'meditation.html'));
 });
 
 // 헬스체크 엔드포인트
