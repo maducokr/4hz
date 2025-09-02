@@ -10,22 +10,22 @@
   <title>4Hz 세타파 바이노럴 비트 MP3 생성기</title>
   <style>
     :root {
-      --bg: #0b1020; --card: #111833; --text: #e7ecff; --sub: #9fb0ff;
-      --accent: #6ea8fe; --accent-2: #4dd0b5; --muted: #2a3358;
+      --bg: #ffffff; --card: #f8f9fa; --text: #000000; --sub: #333333;
+      --accent: #6ea8fe; --accent-2: #4dd0b5; --muted: #e9ecef;
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0; padding: 32px; background: radial-gradient(1200px 600px at 20% 0%, #0f1a3d, var(--bg));
+      margin: 0; padding: 32px; background: var(--bg);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, \B3CB\C6C0, Noto Sans KR, sans-serif;
       color: var(--text);
     }
     .wrap { max-width: 940px; margin: 0 auto; text-align: center; padding: 0 16px; }
-    .title { font-size: 23px; font-weight: 800; letter-spacing: .2px; text-align: center; }
+    .title { font-size: 20px; font-weight: 800; letter-spacing: .2px; text-align: center; }
     .sub { color: var(--sub); margin-top: 6px; font-size: 14px; text-align: center; }
-    .panel { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-             border: 1px solid rgba(255,255,255,.06); box-shadow: 0 10px 40px rgba(0,0,0,.35);
+    .panel { background: var(--card);
+             border: 1px solid rgba(0,0,0,.1); box-shadow: 0 10px 40px rgba(0,0,0,.1);
              border-radius: 16px; padding: 18px; margin-top: 18px; }
-    .button-container { display: flex; flex-direction: column; gap: 12px; }
+    .button-container { display: flex; flex-direction: column; gap: 8px; }
     .btn {
       appearance: none; border: 0; border-radius: 14px; padding: 14px 16px; cursor: pointer; font-weight: 700;
       background: linear-gradient(180deg, var(--accent), #4a7ff0); color: #071128; box-shadow: 0 10px 24px rgba(110,168,254,.35);
@@ -43,12 +43,12 @@
     }
 
     .log { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-           font-size: 12px; color: #cfe3ff; white-space: pre-wrap; background: #0c1228; border-radius: 12px;
-           border: 1px solid rgba(255,255,255,.06); padding: 12px; height: 120px; overflow: auto; }
+           font-size: 12px; color: #000000; white-space: pre-wrap; background: #f8f9fa; border-radius: 12px;
+           border: 1px solid rgba(0,0,0,.1); padding: 12px; height: 120px; overflow: auto; }
     .audio { margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .tip { color: #b7c6ff; font-size: 12px; opacity: .9; text-align: center; }
+    .tip { color: #333333; font-size: 12px; opacity: .9; text-align: center; }
     .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; justify-content: center; }
-    .chip  { border:1px solid rgba(255,255,255,.14); color:#d8e3ff; background: rgba(255,255,255,.04); border-radius: 999px; padding:6px 10px; font-size:12px; }
+    .chip  { border:1px solid rgba(0,0,0,.1); color:#000000; background: rgba(0,0,0,.05); border-radius: 999px; padding:6px 10px; font-size:12px; }
     .progress-container { 
       margin: 15px 0; 
       display: none; 
@@ -83,7 +83,7 @@
       .sub { font-size: 13px; }
       .panel { padding: 16px; margin-top: 16px; border-radius: 12px; }
       .button-container { 
-        gap: 10px; 
+        gap: 6px; 
       }
       .btn { 
         padding: 16px 14px; 
@@ -93,7 +93,7 @@
       .chips { 
         flex-direction: column; 
         align-items: center; 
-        gap: 6px; 
+        gap: 4px; 
       }
       .chip { 
         font-size: 11px; 
@@ -134,7 +134,7 @@
         padding: 18px 16px; 
         font-size: 16px; 
       }
-      .chips { gap: 4px; }
+      .chips { gap: 2px; }
       .chip { 
         font-size: 10px; 
         padding: 4px 6px; 
