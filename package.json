@@ -1,0 +1,32 @@
+{
+  "name": "4hz-binaural-beat-generator",
+  "version": "1.0.0",
+  "description": "4Hz 세타파 바이노럴 비트 MP3 생성기",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "binaural",
+    "beats",
+    "theta",
+    "4hz",
+    "meditation",
+    "sleep",
+    "focus",
+    "audio",
+    "mp3",
+    "generator"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maducokr/4Hz.git"
+  },
+  "homepage": "https://maducokr.github.io/4Hz",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
