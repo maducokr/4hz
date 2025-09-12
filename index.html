@@ -22,6 +22,7 @@
     font-family: system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,\B3CB\C6C0,Noto Sans KR,sans-serif;
     overflow-x: hidden;
     position: relative;
+    min-height: 100vh;
   }
 
   /* 하얀 뭉개그림 배경 애니메이션 */
@@ -272,19 +273,23 @@
     z-index: 1;
   }
 
-  /* 모바일 화면 크기별 반응형 조정 */
+  /* 모바일 화면 크기별 반응형 조정 - 세로 중앙 정렬 */
   @media (max-width: 480px) {
     .wrap {
       max-width: 100%;
-      margin: 16px auto 40px;
-      padding: 0 12px;
+      margin: 0 auto;
+      padding: 20px 12px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
   }
 
   @media (max-width: 360px) {
     .wrap {
-      margin: 12px auto 30px;
-      padding: 0 8px;
+      padding: 12px 8px;
+      min-height: 100vh;
     }
   }
 
