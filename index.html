@@ -22,6 +22,7 @@
     font-family: system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,\B3CB\C6C0,Noto Sans KR,sans-serif;
     overflow-x: hidden;
     position: relative;
+    min-height: 100vh;
   }
 
   /* 하얀 뭉개그림 배경 애니메이션 */
@@ -266,33 +267,50 @@
   /* 모바일 전면(이미지)과 비슷한 세로 1열 중앙 배치 */
   .wrap{
     max-width: 420px;
-    margin: 24px auto 60px;
+    margin: 0 auto;
     padding: 0 16px;
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* 모바일 화면 크기별 반응형 조정 */
+  .content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  /* 모바일 화면 크기별 반응형 조정 - 세로 중앙 정렬 */
   @media (max-width: 480px) {
     .wrap {
       max-width: 100%;
-      margin: 16px auto 40px;
-      padding: 0 12px;
+      padding: 20px 12px;
+    }
+    .content-container {
+      gap: 8px;
     }
   }
 
   @media (max-width: 360px) {
     .wrap {
-      margin: 12px auto 30px;
-      padding: 0 8px;
+      padding: 16px 8px;
+    }
+    .content-container {
+      gap: 6px;
     }
   }
 
   @media (min-width: 768px) {
     .wrap {
       max-width: 500px;
-      margin: 32px auto 80px;
       padding: 0 20px;
+      gap: 12px;
     }
   }
 
@@ -303,12 +321,12 @@
     border:1.6px solid var(--line);
     border-radius:999px;
     background:#fff;
-    color:#111;
+    color:#0b5f5f;
     font-weight:700;
-    font-size:20px;
+    font-size:18px;
     letter-spacing:.2px;
     display:flex; align-items:center; justify-content:center;
-    margin:18px 0;
+    margin:0;
     cursor:pointer;
     user-select:none;
     transition: all 0.2s ease;
@@ -322,7 +340,6 @@
     .oval-btn {
       height: 52px;
       font-size: 18px;
-      margin: 16px 0;
     }
   }
 
@@ -330,7 +347,6 @@
     .oval-btn {
       height: 48px;
       font-size: 16px;
-      margin: 14px 0;
     }
   }
 
@@ -360,14 +376,14 @@
     height:40px;
     border:1.6px solid var(--line);
     border-radius:999px;
-    margin:18px 0;
+    margin:0;
     overflow:hidden;
     background:#fff;
   }
   .progress-fill{
-    position:absolute; left:0; top:0; bottom:0; width:0%;
+    position:absolute; left:0; top:0; bottom:0; width:1%;
     background:#e9ecef;
-    transition: width 0.3s ease;
+    transition: width 0.5s ease;
   }
   .progress-text{
     position:absolute; right:14px; top:50%; transform:translateY(-50%);
@@ -377,7 +393,6 @@
   @media (max-width: 480px) {
     .progress-pill {
       height: 36px;
-      margin: 16px 0;
     }
     .progress-text {
       right: 12px;
@@ -388,7 +403,6 @@
   @media (max-width: 360px) {
     .progress-pill {
       height: 32px;
-      margin: 14px 0;
     }
     .progress-text {
       right: 10px;
@@ -399,10 +413,10 @@
   /* 큰 사각형(로그/플레이어 영역) */
   .panel-box{
     width:100%;
-    height:160px;
+    height:130px;
     border:1.6px solid var(--line);
     border-radius:8px;
-    margin:18px 0 28px;
+    margin:0;
     padding:10px;
     display:flex; flex-direction:column; gap:10px;
     background: rgba(255, 255, 255, 0.95);
@@ -419,7 +433,6 @@
   @media (max-width: 480px) {
     .panel-box {
       height: 140px;
-      margin: 16px 0 24px;
       padding: 8px;
       gap: 8px;
     }
@@ -431,7 +444,6 @@
   @media (max-width: 360px) {
     .panel-box {
       height: 120px;
-      margin: 14px 0 20px;
       padding: 6px;
       gap: 6px;
     }
@@ -447,7 +459,7 @@
     display:flex; align-items:center; justify-content:center;
     border:1.6px solid var(--line);
     border-radius:999px;
-    background:#fff; color:#111; font-weight:700;
+    background:#fff; color:#143f68; font-weight:700;
     cursor:not-allowed;  /* 처음엔 비활성 */
     opacity:.55;
     text-decoration:none;
@@ -510,31 +522,33 @@
   </div>
 
   <div class="wrap">
-    <!-- 상단 제목 -->
-    <div class="oval-btn title-btn" aria-hidden="true">Relaxing Sound</div>
+    <div class="content-container">
+      <!-- 상단 제목 -->
+      <div class="oval-btn title-btn" aria-hidden="true">Relaxing Sound</div>
 
-    <!-- 3가지 프리셋 버튼 (이미지의 문구에 맞춤) -->
-    <button class="oval-btn" id="btn-sleep">수면용 Thepa Wave</button>
-    <button class="oval-btn" id="btn-medit">명상용 Thepa Wave</button>
-    <button class="oval-btn" id="btn-focus">집중용 Thepa Wave</button>
+      <!-- 3가지 프리셋 버튼 (이미지의 문구에 맞춤) -->
+      <button class="oval-btn" id="btn-sleep">수면용 Thepa Wave</button>
+      <button class="oval-btn" id="btn-medit">명상용 Thepa Wave</button>
+      <button class="oval-btn" id="btn-focus">집중용 Thepa Wave</button>
 
-    <!-- 진행률(%) -->
-    <div class="progress-pill" aria-live="polite" aria-label="인코딩 진행률">
-      <div class="progress-fill" id="pfill"></div>
-      <div class="progress-text" id="ppct">%</div>
-    </div>
+      <!-- 진행률(%) -->
+      <div class="progress-pill" aria-live="polite" aria-label="인코딩 진행률">
+        <div class="progress-fill" id="pfill" style="width: 1%"></div>
+        <div class="progress-text" id="ppct">0%</div>
+      </div>
 
-    <!-- 큰 사각형: 로그 + 오디오 -->
-    <div class="panel-box">
-      <div id="log" class="log">준비됨.
+      <!-- 큰 사각형: 로그 + 오디오 -->
+      <div class="panel-box">
+        <div id="log" class="log">준비됨.반려동물도 듣고 싶어해요.
 - 위 버튼 중 하나를 누르면 4Hz 바이노럴 비트 트랙을 생성합니다.
 - 렌더링/인코딩 중에는 이 창을 닫지 마세요.
 </div>
-      <audio id="player" controls></audio>
-    </div>
+        <audio id="player" controls></audio>
+      </div>
 
-    <!-- MP3 DOWN -->
-    <a id="download" class="download-btn" download>MP3 DOWN</a>
+      <!-- MP3 DOWN -->
+      <a id="download" class="download-btn" download>MP3 DOWN</a>
+    </div>
   </div>
 
 <script>
@@ -555,7 +569,7 @@
   function log(msg){ logEl.textContent += `\n${msg}`; logEl.scrollTop = logEl.scrollHeight; }
   function clearLog(){ logEl.textContent = ''; }
   function setProgress(p){
-    const v = Math.max(0, Math.min(100, Math.round(p)));
+    const v = Math.max(1, Math.min(100, Math.round(p)));
     pfill.style.width = v + '%';
     ppct.textContent = v + '%';
   }
@@ -679,17 +693,18 @@
   async function generateAndDownload(preset){
     try{
       resetDownload();
-      setProgress(0);
+      setProgress(1);
       clearLog();
       log(`[시작] ${preset.label} 트랙 생성`);
 
-      // 1) 합성
+      // 1) 합성 - 점진적으로 진행률 증가
+      setProgress(5);
       const buf = await renderBinauralBuffer(preset);
-      setProgress(10);
+      setProgress(15);
       log('[렌더링 완료] MP3 인코딩 시작…');
 
       // 2) MP3 인코딩(진행률 갱신)
-      const blob = encodeMp3WithProgress(buf, p => setProgress(10 + p*0.9)); // 대략 10%→100%
+      const blob = encodeMp3WithProgress(buf, p => setProgress(15 + p*0.85)); // 15%→100%
       const url = URL.createObjectURL(blob);
       const fileName = `${preset.file || 'binaural_4hz'}.mp3`;
 
@@ -703,7 +718,7 @@
       console.error(err);
       log(`[에러] ${err.message || err}`);
       alert(err.message || String(err));
-      setProgress(0);
+      setProgress(1);
       resetDownload();
     }
   }
