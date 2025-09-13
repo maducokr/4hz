@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 # SPA (Single Page Application) 라우팅 지원
 # 모든 요청을 index.html로 리다이렉트
 /*    /index.html   200
+=======
+# SPA (Single Page Application) 라우팅 지원
+# 모든 요청을 index.html로 리다이렉트
+/*    /index.html   200
+>>>>>>> aefeaaa06295ab3750cce6ef999819e0a2a86b7b
